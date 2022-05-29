@@ -12,7 +12,7 @@ const Mongo = () => {
     try {
       mongoose.set("debug", false)
 
-      await mongoose.connect(url, options)
+     mongoose.connect(url, options)
       database = mongoose.connection
       console.log(chalk.greenBright(`Connected to ${url}`))
 

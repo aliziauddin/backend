@@ -37,7 +37,7 @@ const Todo = () => {
     }
   }
 
-  const remove = async ({ todoId }: { todoId: string }): Promise<Boolean> => {
+  const remove = async ({ todoId }: { todoId: string }): Promise<boolean> => {
     try {
       return !!(await TodoModel.findOneAndDelete({ _id: todoId }))
     } catch (err) {
