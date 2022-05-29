@@ -1,0 +1,104 @@
+#!/bin/bash
+
+mongo_version=`mongo version | grep "mongo --v" | sed 's/.* \(.*\)/\1/'`
+
+command="$1"
+environment="$2"
+port=27019
+dbpath=./.tmp/db
+
+function title {
+    echo -ne "\033]0;"$*"\007"
+}
+
+function runMongo {
+  [ ! -d ".tmp" ] && mkdir .tmp
+  mkdir .tmp/db
+    mongod --dbpath=$dbpath --port=$port --replSet rs0& sleep 5 && mongo --port $port <<EOF
+var cfg = {
+    "_id": "rs0",
+    "version": 1,
+    "members": [
+        {
+            "_id": 0,
+            "host": "localhost:$port",
+            "priority": 2
+        }
+    ]
+};
+rs.initiate(
+  cfg
+  ,{
+      force:true
+  }
+);
+rs.reconfig(cfg, { force: true });
+db.getMongo().setReadPref('nearest');
+EOF
+}
+
+echo -e "\nUsing mongo version $mongo_version installed at `which mongo` "
+
+if [ "$environment" == "" ]; then
+  dir="$(dirname $PWD)"
+  environment="$(basename $dir)"
+fi
+
+if [ "$command" == "" ]; then
+  echo -e "\nUsage:\n  mongo command [environment name]\n\n"
+  echo -e "Commands:"
+  echo -e "  start   start mongo as a background service"
+  echo -e "  rerun   clears and then runs mongo zero server"
+  echo -e "  run     run mongo alpha in foreground"
+  echo -e "  stop    stop all local mongo services"
+  echo -e "  clear   clear mongo log and data files"
+  echo -e "  clear!  clear mongo log and data files without prompting"
+  echo -e "\nExample: mongo start development"
+  exit 1
+fi
+
+# Set the terminal title to environment so it's easier to identify in tabs
+title $environment
+
+if [ "$command" == "start" ]; then
+  echo "Starting mongo for $environment"
+  # This script runs the mongo in background
+  mongod --dbpath=$dbpath --port=$port --replSet rs0
+  exit 0
+fi
+
+if [ "$command" == "clear" ]; then
+  read -p "Clearing mongo data. Are you sure? (y/N) " -n 1 -r
+  echo    # (optional) move to a new line
+  if [[ $REPLY =~ ^[Yy]$ ]]
+  then
+    rm -rf .tmp/*
+    rm *.log
+    echo Done!
+  fi
+fi
+
+if [ "$command" == "clear!" ]; then
+  rm -rf .tmp/*
+  rm *.log
+  echo Done!
+fi
+
+if [ "$command" == "stop" ]; then
+  echo "Stopping all local mongo services"
+  killall mongod
+  exit 0
+fi
+
+
+if [ "$command" == "run" ]; then
+  echo "Running mongo for $environment"
+  runMongo
+fi
+
+if [ "$command" == "rerun" ]; then
+  echo "Clearing and running mongo for $environment"
+  rm -rf .tmp/*
+  rm *.log
+  runMongo
+fi
