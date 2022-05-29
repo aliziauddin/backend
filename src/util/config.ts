@@ -12,7 +12,7 @@ const configuration = {
     playground: true
   },
   mongo: {
-    url: "mongodb://localhost:27019/todo?retryWrites=false",
+    url: "mongodb+srv://alizia:qwerty1234@cluster0.oa53x.mongodb.net/?retryWrites=true&w=majority",
     options: {
       useNewUrlParser: true,
       useUnifiedTopology: true
