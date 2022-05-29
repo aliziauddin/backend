@@ -41,7 +41,7 @@ const startApolloServer = async (typeDefs: any, resolvers: any) => {
   })
 
   await new Promise<void>((resolve) =>
-    httpServer.listen({ port: config.port }, resolve)
+    httpServer.listen({ port:  process.env.PORT || config.port   }, resolve)
   )
   console.log(
     `\n\n${chalk.red.bold(logo)}
