@@ -1,5 +1,5 @@
-import { UserModel } from "./User.model"
-import { UserDocument } from "./User.types"
+import { UserModel } from "./user.model"
+import { UserDocument } from "./user.types"
 import jwt from "jsonwebtoken"
 import bcrypt from "bcrypt"
 import { ValidationError } from "apollo-server"
@@ -7,7 +7,6 @@ import configurations from "../../util/config"
 
 const secret = configurations.jwtSecretKey
 export interface UserParams {
-  bvid: string
   name: string
   email: string
   password?: string
@@ -24,7 +23,6 @@ const User = () => {
     password: string
   }): Promise<string> => {
     try {
-      console.log({ name, email, password })
       const existingUser = await UserModel.findOne({ email })
       console.log(existingUser)
       if (existingUser) throw new ValidationError("User is already Registered")
@@ -70,13 +68,13 @@ const User = () => {
 
   const forId = async (bvid: string): Promise<UserDocument> => {
     const User = await UserModel.findById(bvid)
-    User.bvid = User._id
+   
     return User
   }
 
   const forEmail = async (email: string): Promise<UserDocument> => {
     const User = await UserModel.findOne({ email })
-    User.bvid = User._id
+
     return User
   }
 

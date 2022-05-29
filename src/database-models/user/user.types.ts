@@ -1,4 +1,4 @@
 import { Document } from "mongoose"
-import { UserParams } from "./User"
+import { UserParams } from "./user"
 
 export interface UserDocument extends UserParams, Document {}

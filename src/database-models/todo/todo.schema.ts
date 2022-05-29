@@ -1,5 +1,5 @@
 import { Schema } from "mongoose"
-import { UserModel } from "../User/User.model"
+import { UserModel } from "../user/user.model"
 
 export const TodoSchema = new Schema({
   user: {

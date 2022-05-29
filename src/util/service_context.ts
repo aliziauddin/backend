@@ -1,5 +1,5 @@
-import { Authorization } from "../util/authorization"
+import { AuthorizationType } from "../util/authorization"
 
 export interface ServiceContext {
-  auth: Authorization
+  auth: AuthorizationType
 }

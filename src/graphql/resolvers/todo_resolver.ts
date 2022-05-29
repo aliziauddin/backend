@@ -1,6 +1,6 @@
 import { ValidationError } from "apollo-server"
 import { AuthContext } from "../../util/authorization"
-import User from "../../database-models/User/User"
+import User from "../../database-models/user/user"
 import Todo from "../../database-models/todo/todo"
 
 export const TodoResolver = {
